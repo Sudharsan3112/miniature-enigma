@@ -1,3 +1,11 @@
+interface Author {
+  name: string;
+}
+
+interface Book {
+  title: string;
+  authors?: Author[];
+}
 
 export default async function Docs({ params }: { params: { slug: number } }) {
   const book = await getBook(params.slug);
@@ -7,8 +15,7 @@ export default async function Docs({ params }: { params: { slug: number } }) {
       {book ? (
         <div>
           <h2>{book.title}</h2>
-          <p><strong>Authors:</strong> {book.authors?.map((author: any) => author.name).join(", ")}</p>
-          {book.cover}
+          <p><strong>Authors:</strong> {book.authors?.map((author) => author.name).join(", ")}</p>
         </div>
       ) : (
         <p>Book not found.</p>
@@ -18,7 +25,7 @@ export default async function Docs({ params }: { params: { slug: number } }) {
 }
 
 // Function to fetch book details
-async function getBook(isbn: number) {
+async function getBook(isbn: number): Promise<Book | null> {
   try {
     const response = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
     const data = await response.json();
