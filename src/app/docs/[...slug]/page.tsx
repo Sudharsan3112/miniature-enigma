@@ -1,4 +1,3 @@
-import Image from 'next/image';
 
 export default async function Docs({ params }: { params: { slug: number } }) {
   const book = await getBook(params.slug);
@@ -9,15 +8,7 @@ export default async function Docs({ params }: { params: { slug: number } }) {
         <div>
           <h2>{book.title}</h2>
           <p><strong>Authors:</strong> {book.authors?.map((author: any) => author.name).join(", ")}</p>
-          {book.cover && (
-            <Image
-              src={book.cover.large}
-              alt={book.title}
-              width={500}  // Replace with actual width
-              height={750} // Replace with actual height
-              layout="intrinsic"  // Optional for automatic aspect ratio
-            />
-          )}
+          {book.cover}
         </div>
       ) : (
         <p>Book not found.</p>
