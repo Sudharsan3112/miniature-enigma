@@ -1,3 +1,5 @@
+import { GetServerSideProps } from 'next';
+
 interface Author {
   name: string;
 }
@@ -7,9 +9,11 @@ interface Book {
   authors?: Author[];
 }
 
-export default async function Docs({ params }: { params: { slug: number } }) {
-  const book = await getBook(params.slug);
+interface DocsPageProps {
+  book: Book | null;
+}
 
+export default function Docs({ book }: DocsPageProps) {
   return (
     <div>
       {book ? (
@@ -23,6 +27,18 @@ export default async function Docs({ params }: { params: { slug: number } }) {
     </div>
   );
 }
+
+// Fetch book data based on ISBN in getServerSideProps
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { slug } = context.params as { slug: string }; // Assuming slug is a string from the URL
+  const book = await getBook(Number(slug));
+
+  return {
+    props: {
+      book,
+    },
+  };
+};
 
 // Function to fetch book details
 async function getBook(isbn: number): Promise<Book | null> {
